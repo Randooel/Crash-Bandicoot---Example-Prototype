@@ -1,9 +1,10 @@
 using UnityEngine;
 
 [RequireComponent(typeof(CharacterController))]
-public class PlayerMovement : MonoBehaviour
+public abstract class PlayerMovement : MonoBehaviour
 {
-    Animator animator;
+    [SerializeField] protected Animator animator;
+    // public / private / protected
 
     [Header("Movement")]
     public float moveSpeed = 5f;
@@ -83,5 +84,14 @@ public class PlayerMovement : MonoBehaviour
 
         velocity.y += gravity * Time.deltaTime;
         controller.Move(velocity * Time.deltaTime);
+    }
+
+    protected abstract void Attack();
+    protected virtual void EspecialAttack()
+    {
+        if (Input.GetMouseButtonDown(1))
+        {
+            animator.SetTrigger("EspecialAttack");
+        }
     }
 }
