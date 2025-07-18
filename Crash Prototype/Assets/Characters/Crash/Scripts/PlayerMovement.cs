@@ -3,15 +3,26 @@ using UnityEngine;
 [RequireComponent(typeof(CharacterController))]
 public class PlayerMovement : MonoBehaviour
 {
-    private CharacterController controller;
-    [SerializeField] Transform visual;
-
-    public float moveSpeed = 5f;
-
     Animator animator;
 
+    [Header("Movement")]
+    public float moveSpeed = 5f;
+    private CharacterController controller;
+
+    [Header("Rotation")]
     public float turnSmoothTime = 0.1f;
     float turnSmoothVelocity;
+    [SerializeField] Transform visual;
+
+    [Header("Jump")]
+    public float gravity = -9.81f;
+    public float jumpHeight = 2;
+    Vector3 velocity;
+
+    public Transform groundCheck;
+    public float groundDistance = 0.4f;
+    public LayerMask groundMask;
+    bool isGrounded;
 
     void Start()
     {
@@ -22,6 +33,7 @@ public class PlayerMovement : MonoBehaviour
     void Update()
     {
         Move();
+        Jump();
     }
 
     void Move()
@@ -43,5 +55,23 @@ public class PlayerMovement : MonoBehaviour
             // Move
             controller.Move(direction * moveSpeed * Time.deltaTime);
         }
+    }
+
+    void Jump()
+    {
+        isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
+
+        if (isGrounded && velocity.y < 0)
+        {
+            velocity.y = -2f;
+        }
+
+        if (isGrounded && Input.GetKeyDown(KeyCode.Space))
+        {
+            velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
+        }
+
+        velocity.y += gravity * Time.deltaTime;
+        controller.Move(velocity * Time.deltaTime);
     }
 }
