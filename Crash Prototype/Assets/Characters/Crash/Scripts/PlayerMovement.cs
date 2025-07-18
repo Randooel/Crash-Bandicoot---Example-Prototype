@@ -16,24 +16,34 @@ public class PlayerMovement : MonoBehaviour
 
     [Header("Jump")]
     public float gravity = -9.81f;
-    public float jumpHeight = 2;
+    [Range(1, 10)] public float jumpHeight = 2;
     Vector3 velocity;
 
+    [Space(10)]
+    public LayerMask groundMask;
     public Transform groundCheck;
     public float groundDistance = 0.4f;
-    public LayerMask groundMask;
     bool isGrounded;
+
+    private Vector3 startPos;
 
     void Start()
     {
         controller = GetComponent<CharacterController>();
         animator = GetComponent<Animator>();
+
+        startPos = transform.position;
     }
 
     void Update()
     {
         Move();
         Jump();
+
+        if(Input.GetKeyDown(KeyCode.R))
+        {
+            transform.position = startPos;
+        }
     }
 
     void Move()
